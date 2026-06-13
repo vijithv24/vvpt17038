@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Weather Companion</title>
+    <!-- Modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="weather-clear-day">
+    <div class="app-background-overlay"></div>
+    
+    <main class="app-container">
+        <!-- Search Section -->
+        <section class="search-section">
+            <form id="search-form" class="search-form">
+                <div class="search-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20">
+                        <circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                        <line x1="16.5" y1="16.5" x2="22" y2="22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Search for a city..." 
+                        autocomplete="off" 
+                        required
+                        aria-label="City search"
+                    >
+                </div>
+                <button type="submit" class="search-btn" aria-label="Search">
+                    <span>Search</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" width="16" height="16">
+                        <path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </form>
+        </section>
+
+        <!-- Loader State -->
+        <div id="loader" class="loader-container hidden" aria-live="polite">
+            <div class="spinner"></div>
+            <p>Fetching weather data...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-card" class="error-card hidden" aria-live="assertive">
+            <svg class="error-icon" viewBox="0 0 24 24" width="24" height="24">
+                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="12" cy="16" r="1" fill="currentColor"/>
+            </svg>
+            <span id="error-message">City not found. Please try again.</span>
+        </div>
+
+        <!-- Main Weather Dashboard Card -->
+        <section id="weather-dashboard" class="weather-dashboard hidden">
+            <!-- Hero weather block -->
+            <div class="weather-hero-card">
+                <div class="hero-header">
+                    <h1 id="city-name" class="city-name">San Francisco</h1>
+                    <p id="local-time" class="local-time">Current Weather</p>
+                </div>
+                
+                <div class="hero-body">
+                    <div class="weather-visual">
+                        <div id="weather-animation-container" class="weather-animation-container">
+                            <!-- SVG weather icons will be injected here dynamically -->
+                        </div>
+                    </div>
+                    <div class="weather-temperature-block">
+                        <div class="temp-row">
+                            <span id="temperature" class="temperature">72</span>
+                            <button id="unit-toggle-btn" class="unit-toggle-btn" aria-label="Toggle Temperature Unit">
+                                <span class="unit-f active">°F</span>
+                                <span class="unit-divider">/</span>
+                                <span class="unit-c">°C</span>
+                            </button>
+                        </div>
+                        <span id="weather-description" class="weather-description">Partly Cloudy</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Details Grid -->
+            <div class="weather-details-grid">
+                <!-- Apparent Temperature Card -->
+                <div class="detail-card">
+                    <div class="detail-header">
+                        <svg class="detail-icon" viewBox="0 0 24 24" width="18" height="18">
+                            <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                        </svg>
+                        <h3>Feels Like</h3>
+                    </div>
+                    <p class="detail-value"><span id="feels-like">70</span>°</p>
+                </div>
+
+                <!-- Humidity Card -->
+                <div class="detail-card">
+                    <div class="detail-header">
+                        <svg class="detail-icon" viewBox="0 0 24 24" width="18" height="18">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <!-- Better humidity droplet representation -->
+                        <svg class="detail-icon" viewBox="0 0 24 24" width="18" height="18">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <h3>Humidity</h3>
+                    </div>
+                    <p class="detail-value"><span id="humidity">64</span>%</p>
+                </div>
+
+                <!-- Wind Card -->
+                <div class="detail-card">
+                    <div class="detail-header">
+                        <svg class="detail-icon" viewBox="0 0 24 24" width="18" height="18">
+                            <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <h3>Wind</h3>
+                    </div>
+                    <p class="detail-value"><span id="wind-speed">8.5</span> <span class="detail-unit" id="wind-unit">mph</span></p>
+                </div>
+
+                <!-- UV Index / Condition Card -->
+                <div class="detail-card">
+                    <div class="detail-header">
+                        <svg class="detail-icon" viewBox="0 0 24 24" width="18" height="18">
+                            <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <h3>Cloud Cover</h3>
+                    </div>
+                    <p class="detail-value"><span id="cloud-cover">20</span>%</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>Powered by Open-Meteo API • Gradient Weather Companion</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

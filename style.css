@@ -1,0 +1,558 @@
+/* Modern CSS Reset & Custom Properties */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --font-primary: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    /* Card Glassmorphism Default Design System */
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-shadow: rgba(0, 0, 0, 0.15);
+    --glass-blur: blur(20px);
+    
+    /* Text colors */
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.45);
+}
+
+body {
+    font-family: var(--font-primary);
+    min-height: 100vh;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+    padding: 2rem 1rem;
+    background-color: #0d1117;
+}
+
+/* Background Gradients system using pseudo elements to transition smoothly */
+body::before, .app-background-overlay {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -2;
+    transition: var(--transition-slow);
+}
+
+.app-background-overlay {
+    z-index: -1;
+    opacity: 0;
+}
+
+/* Weather States Gradients Definitions */
+/* 1. Clear/Sunny Day */
+body.weather-clear-day::before {
+    background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
+}
+body.weather-clear-day .app-background-overlay {
+    background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%);
+    opacity: 1;
+}
+
+/* 2. Clear/Sunny Night */
+body.weather-clear-night::before {
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+}
+body.weather-clear-night .app-background-overlay {
+    background: linear-gradient(135deg, #020024 0%, #090979 35%, #00d4ff 100%);
+    opacity: 0.85;
+}
+
+/* 3. Cloudy/Overcast */
+body.weather-cloudy::before {
+    background: linear-gradient(135deg, #3a6073 0%, #3a7bd5 100%);
+}
+body.weather-cloudy .app-background-overlay {
+    background: linear-gradient(135deg, #606c88 0%, #3f5efb 100%);
+    opacity: 0.9;
+}
+
+/* 4. Rainy/Drizzle */
+body.weather-rainy::before {
+    background: linear-gradient(135deg, #203a43 0%, #0f2027 100%);
+}
+body.weather-rainy .app-background-overlay {
+    background: linear-gradient(135deg, #1f4068 0%, #162447 50%, #1b1a17 100%);
+    opacity: 0.95;
+}
+
+/* 5. Thunderstorm */
+body.weather-stormy::before {
+    background: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+}
+body.weather-stormy .app-background-overlay {
+    background: linear-gradient(135deg, #0f0c20 0%, #15102a 50%, #2b1055 100%);
+    opacity: 0.95;
+}
+
+/* 6. Snow */
+body.weather-snowy::before {
+    background: linear-gradient(135deg, #83a4d4 0%, #b6fbff 100%);
+}
+body.weather-snowy .app-background-overlay {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    opacity: 0.9;
+    color: #2c3e50; /* Adjust container colors slightly for snow if needed */
+}
+
+/* 7. Mist/Fog */
+body.weather-misty::before {
+    background: linear-gradient(135deg, #606c88 0%, #3f5efb 100%);
+}
+body.weather-misty .app-background-overlay {
+    background: linear-gradient(135deg, #757f9a 0%, #d7dde8 100%);
+    opacity: 0.9;
+}
+
+/* Container Structure */
+.app-container {
+    width: 100%;
+    max-width: 480px;
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 1;
+}
+
+/* Search Bar Styling */
+.search-section {
+    width: 100%;
+}
+
+.search-form {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.search-wrapper {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1.25rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+    transition: var(--transition-smooth);
+}
+
+.search-form input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3.25rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    outline: none;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    transition: var(--transition-smooth);
+}
+
+.search-form input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-form input:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(255, 255, 255, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.search-form input:focus + .search-icon {
+    color: var(--text-primary);
+    transform: scale(1.05);
+}
+
+.search-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1.5rem;
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0f172a;
+    background: #ffffff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+    transition: var(--transition-smooth);
+}
+
+.search-btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.25);
+}
+
+.search-btn:active {
+    transform: translateY(0);
+}
+
+.arrow-icon {
+    transition: var(--transition-smooth);
+}
+
+.search-btn:hover .arrow-icon {
+    transform: translateX(3px);
+}
+
+/* Loader & Error States */
+.loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    animation: fadeIn 0.4s ease-out;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.error-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 20px;
+    color: #fca5a5;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Main Dashboard Card */
+.weather-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.weather-hero-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    padding: 2.25rem;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: 0 20px 40px var(--glass-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.hero-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.city-name {
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.local-time {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+.hero-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* Weather Animation Icon container */
+.weather-visual {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.weather-animation-container svg {
+    width: 100px;
+    height: 100px;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+}
+
+.weather-temperature-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.temp-row {
+    display: flex;
+    align-items: flex-start;
+}
+
+.temperature {
+    font-size: 4.5rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+}
+
+.temp-unit {
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-top: 0.5rem;
+    margin-left: 0.1rem;
+    opacity: 0.85;
+}
+
+.weather-description {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+    text-transform: capitalize;
+}
+
+/* Details Grid */
+.weather-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.detail-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 22px;
+    padding: 1.25rem;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: 0 10px 25px var(--glass-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: var(--transition-smooth);
+}
+
+.detail-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.detail-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.detail-header h3 {
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.detail-icon {
+    opacity: 0.85;
+}
+
+.detail-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.detail-value span {
+    font-size: 1.6rem;
+}
+
+.detail-unit {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+/* Footer Section */
+.app-footer {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    letter-spacing: 0.02em;
+    z-index: 1;
+}
+
+/* Utility classes */
+.hidden {
+    display: none !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+    40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+/* Unit Switcher Button Styles */
+.unit-toggle-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin-top: 0.5rem;
+    margin-left: 0.35rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1rem;
+    user-select: none;
+    transition: var(--transition-smooth);
+    padding: 0.1rem 0.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.unit-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.unit-toggle-btn span {
+    transition: var(--transition-smooth);
+}
+
+.unit-toggle-btn .active {
+    font-weight: 600;
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+.unit-toggle-btn span:not(.active):not(.unit-divider) {
+    opacity: 0.5;
+}
+
+.unit-toggle-btn .unit-divider {
+    opacity: 0.3;
+    margin: 0 0.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    body {
+        padding: 1.5rem 1rem;
+    }
+    
+    .city-name {
+        font-size: 1.85rem;
+    }
+    
+    .temperature {
+        font-size: 3.75rem;
+    }
+    
+    .weather-visual {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .weather-animation-container svg {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .weather-hero-card {
+        padding: 1.75rem;
+    }
+}
+
+/* SVG Animations for Premium Feeling */
+.animate-spin-slow {
+    animation: spin 16s linear infinite;
+    transform-origin: center;
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+    animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
