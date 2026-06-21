@@ -9,22 +9,31 @@
     --font-primary: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     
     /* Card Glassmorphism Default Design System */
     --glass-bg: rgba(255, 255, 255, 0.08);
     --glass-border: rgba(255, 255, 255, 0.12);
     --glass-shadow: rgba(0, 0, 0, 0.15);
     --glass-blur: blur(20px);
+    --glass-blur-heavy: blur(40px);
     
     /* Text colors */
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.7);
     --text-muted: rgba(255, 255, 255, 0.45);
+    
+    /* Safe area support for iPhone notch/Dynamic Island */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
 }
 
 body {
     font-family: var(--font-primary);
     min-height: 100vh;
+    min-height: 100dvh;
     color: var(--text-primary);
     display: flex;
     flex-direction: column;
@@ -32,8 +41,9 @@ body {
     align-items: center;
     overflow-x: hidden;
     position: relative;
-    padding: 2rem 1rem;
+    padding: calc(2rem + var(--safe-top)) 1rem calc(2rem + var(--safe-bottom));
     background-color: #0d1117;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* Background Gradients system using pseudo elements to transition smoothly */
@@ -507,7 +517,7 @@ body.weather-misty .app-background-overlay {
 /* Responsive adjustments */
 @media (max-width: 480px) {
     body {
-        padding: 1.5rem 1rem;
+        padding: calc(1.5rem + var(--safe-top)) 1rem calc(1.5rem + var(--safe-bottom));
     }
     
     .city-name {
@@ -533,6 +543,47 @@ body.weather-misty .app-background-overlay {
     }
 }
 
+/* Particle System */
+.particle-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    animation: particle-rise var(--duration, 8s) ease-in-out var(--delay, 0s) infinite;
+    background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
+    width: var(--size, 4px);
+    height: var(--size, 4px);
+    left: var(--x, 50%);
+    top: 100%;
+}
+
+@keyframes particle-rise {
+    0% {
+        opacity: 0;
+        transform: translateY(0) translateX(0) scale(0.5);
+    }
+    10% {
+        opacity: var(--max-opacity, 0.5);
+    }
+    80% {
+        opacity: var(--max-opacity, 0.5);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-100vh) translateX(var(--drift, 20px)) scale(1);
+    }
+}
+
 /* SVG Animations for Premium Feeling */
 .animate-spin-slow {
     animation: spin 16s linear infinite;
@@ -555,4 +606,656 @@ body.weather-misty .app-background-overlay {
 @keyframes pulse {
     0%, 100% { opacity: 0.7; }
     50% { opacity: 1; }
+}
+
+/* ==========================================
+   Premium Component Layouts & Visual Styles
+   ========================================== */
+
+/* Glassmorphism Generic Card */
+.glass-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 26px;
+    padding: 1.5rem;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: 0 15px 35px var(--glass-shadow);
+    transition: var(--transition-smooth);
+}
+
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
+}
+
+/* Geolocation Button */
+.geo-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    transition: var(--transition-smooth);
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    flex-shrink: 0;
+}
+
+.geo-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px rgba(255, 255, 255, 0.05);
+}
+
+.geo-btn:active {
+    transform: translateY(0);
+}
+
+.geo-btn.loading svg {
+    animation: spin 1.5s linear infinite;
+    color: #3b82f6;
+}
+
+/* Recent Searches Dropdown Menu */
+.recent-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    list-style: none;
+    padding: 0.5rem 0;
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.recent-dropdown li {
+    padding: 0.85rem 1.25rem;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: var(--transition-smooth);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.recent-dropdown li:last-child {
+    border-bottom: none;
+}
+
+.recent-dropdown li:hover {
+    background: rgba(255, 255, 255, 0.08);
+    padding-left: 1.5rem;
+}
+
+.recent-dropdown li .delete-search-btn {
+    opacity: 0.4;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0.3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+}
+
+.recent-dropdown li .delete-search-btn:hover {
+    opacity: 1;
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    transform: scale(1.1);
+}
+
+/* Sunrise / Sunset Track Arc */
+.sun-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.sun-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.5rem;
+}
+
+.sun-point {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex: 1;
+}
+
+.sun-point.right {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.sun-icon {
+    color: #f59e0b;
+    filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.4));
+    flex-shrink: 0;
+}
+
+.sun-icon.set {
+    color: #f97316;
+    filter: drop-shadow(0 0 5px rgba(249, 115, 22, 0.4));
+}
+
+.sun-label {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.15rem;
+}
+
+.sun-time {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.sun-arc-wrapper {
+    width: 180px;
+    height: 90px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin: 0.5rem 0;
+}
+
+.sun-arc-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+#sun-dot {
+    transition: cx 0.5s ease-out, cy 0.5s ease-out;
+}
+
+#sun-arc-progress {
+    transition: stroke-dashoffset 0.5s ease-out;
+}
+
+.daylight-duration {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.45rem 1.15rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Hourly Sparkline Scroll Widget */
+.hourly-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.hourly-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.65rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+
+.hourly-scroll-wrapper::-webkit-scrollbar {
+    height: 4px;
+}
+
+.hourly-scroll-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.hourly-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+.hourly-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.hourly-chart {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.hourly-item {
+    flex: 0 0 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.85rem 0.5rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    transition: var(--transition-smooth);
+}
+
+.hourly-item:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.hourly-item.active-now {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.08);
+}
+
+.hourly-time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.hourly-icon-svg {
+    width: 32px;
+    height: 32px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.hourly-temp {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.hourly-precip {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #60a5fa;
+    background: rgba(96, 165, 250, 0.12);
+    padding: 0.15rem 0.35rem;
+    border-radius: 6px;
+}
+
+/* 7-Day Forecast Section */
+.forecast-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.forecast-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.forecast-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: var(--transition-smooth);
+    gap: 1rem;
+}
+
+.forecast-row:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(3px);
+}
+
+.forecast-day {
+    font-size: 0.9rem;
+    font-weight: 600;
+    width: 76px;
+    flex-shrink: 0;
+}
+
+.forecast-weather {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-grow: 1;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.forecast-icon-svg {
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+.forecast-temps {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    width: 80px;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+}
+
+.forecast-temp-max {
+    font-weight: 600;
+}
+
+.forecast-temp-min {
+    color: var(--text-secondary);
+    opacity: 0.75;
+}
+
+/* Micro-Progress Bars for Stats Details */
+.mini-bar-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 0.25rem;
+}
+
+.mini-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.humidity-bar {
+    background: linear-gradient(90deg, #2563eb, #60a5fa);
+}
+
+.cloud-bar {
+    background: linear-gradient(90deg, #64748b, #cbd5e1);
+}
+
+.precip-bar {
+    background: linear-gradient(90deg, #0284c7, #38bdf8);
+}
+
+/* UV Label */
+.uv-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.uv-low {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+}
+
+.uv-mod {
+    background: rgba(234, 179, 8, 0.15);
+    color: #facc15;
+}
+
+.uv-high {
+    background: rgba(249, 115, 22, 0.15);
+    color: #fb923c;
+}
+
+.uv-veryhigh {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+}
+
+.uv-extreme {
+    background: rgba(168, 85, 247, 0.15);
+    color: #c084fc;
+}
+
+/* ===========================
+   Quick Stats Row (Hero Card)
+   =========================== */
+.quick-stats-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 18px;
+    margin-top: -0.5rem;
+}
+
+.quick-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-align: center;
+    flex: 1;
+}
+
+.quick-stat svg {
+    opacity: 0.7;
+}
+
+.quick-stat span {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: block;
+    line-height: 1;
+}
+
+/* ===========================
+   App Container z-index fix
+   =========================== */
+.app-container {
+    z-index: 1;
+    position: relative;
+}
+
+/* ===========================
+   Animated gradient shimmer
+   on weather hero card
+   =========================== */
+@keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+/* ===========================
+   iPhone-style Tap Feedback
+   =========================== */
+.geo-btn:active,
+.search-btn:active,
+.unit-toggle-btn:active,
+.detail-card:active {
+    transform: scale(0.96) !important;
+    transition: transform 0.1s ease !important;
+}
+
+.hourly-item:active {
+    transform: scale(0.94) !important;
+    transition: transform 0.1s ease !important;
+}
+
+.forecast-row:active {
+    transform: translateX(6px) !important;
+    transition: transform 0.1s ease !important;
+}
+
+/* ===========================
+   Loading Skeleton Shimmer
+   =========================== */
+@keyframes skeleton-shimmer {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+/* ===========================
+   Smooth scroll for main
+   =========================== */
+.app-container {
+    scroll-behavior: smooth;
+}
+
+/* ===========================
+   Badge / chip on quick stats
+   =========================== */
+.quick-stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 0.1rem;
+}
+
+/* ===========================
+   High-quality frosted header
+   =========================== */
+.search-section {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding: 0.5rem 0 0.75rem;
+    margin: -0.5rem 0 0;
+    /* Blurred back-drop for search bar as user scrolls */
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    transition: backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease;
+}
+
+.search-section.scrolled {
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    background: rgba(0,0,0,0.15);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ===========================
+   Weather Hero Card Enhancement
+   =========================== */
+.weather-hero-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.weather-hero-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.06) 0%,
+        transparent 60%
+    );
+    pointer-events: none;
+}
+
+/* ===========================
+   Card entry animations
+   =========================== */
+.glass-card {
+    animation: cardEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.sun-card { animation-delay: 0.05s; }
+.hourly-card { animation-delay: 0.1s; }
+.forecast-card { animation-delay: 0.15s; }
+.weather-details-grid .detail-card:nth-child(1) { animation: cardEntrance 0.5s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.weather-details-grid .detail-card:nth-child(2) { animation: cardEntrance 0.5s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.weather-details-grid .detail-card:nth-child(3) { animation: cardEntrance 0.5s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.weather-details-grid .detail-card:nth-child(4) { animation: cardEntrance 0.5s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.weather-details-grid .detail-card:nth-child(5) { animation: cardEntrance 0.5s 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.weather-details-grid .detail-card:nth-child(6) { animation: cardEntrance 0.5s 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@keyframes cardEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===========================
+   Hero temperature glow
+   =========================== */
+.temperature {
+    text-shadow: 0 0 60px rgba(255, 255, 255, 0.15);
+}
+
+/* ===========================
+   Better footer
+   =========================== */
+.app-footer {
+    position: relative;
+    z-index: 1;
+    padding-bottom: var(--safe-bottom);
+}
+
+/* ===========================
+   Weather condition badge
+   =========================== */
+.weather-description {
+    display: inline-block;
+    background: rgba(255,255,255,0.07);
+    padding: 0.2rem 0.75rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ===========================
+   Hourly icon scale
+   =========================== */
+.hourly-icon-svg svg,
+.forecast-icon-svg svg {
+    width: 100%;
+    height: 100%;
 }
